@@ -1,14 +1,25 @@
 
 
 import '../App.css'
-import axios from 'axios'
+//import axios from 'axios'
 import Header from '../components/Header'
+import {useNavigate} from 'react-router-dom';
 
 function Home() {
-const createRoom = async () => {
-            const response = await axios.post("http://localhost:3000/create-room");
-            console.log(response.data);
-        };
+  const navigate = useNavigate();
+
+  // const createRoom = async () => {
+  //   try {
+  //     const response = await axios.post("http://localhost:3000/create-room");
+  //     const roomCode = response.data.roomCode;
+
+  //     navigate(`/lobby/${roomCode}`);
+  //   } catch (error) {
+  //     console.error("Error creating room:", error);
+  //   }
+  // };
+
+  
   return (
     <>
     
@@ -25,8 +36,7 @@ const createRoom = async () => {
         </div>
         <button
           type="button"
-          className="counter"
-          onClick={createRoom}
+          onClick={() => navigate("/create")}
         >
           Create Room 
         </button>

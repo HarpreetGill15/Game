@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import CreateRoom from './pages/CreateRoom'
 import JoinRoom from './pages/JoinRoom'
 import Questions from './pages/Questions'
+import Lobby from './pages/Lobby'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -19,6 +20,7 @@ function App() {
           <Route path="/create" element={<CreateRoom />} />
           <Route path="/join" element={<JoinRoom />} />
           <Route path="/questions" element={<Questions />} />
+          <Route path="/lobby/:roomCode" element={<Lobby />} />
         </Routes>
     </BrowserRouter>
       

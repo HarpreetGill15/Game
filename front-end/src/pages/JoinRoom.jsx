@@ -1,33 +1,37 @@
 
-
+import axios from 'axios';
+import { useState } from 'react';
 import '../App.css'
-//import axios from 'axios'
 import Header from '../components/Header'
-// import {useNavigate} from 'react-router-dom'
-// import { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
+import { useEffect } from "react";
 
-// const [playerName, setPlayerName] = useState("");
-// const [roomCode, setRoomCode] = useState("");
-// const navigate = useNavigate();
-// const joinRoom = async () => {
-//     try {
-//       const response = await axios.post("http://localhost:3000/join-room", {
-//       roomCode, playerName
-//     });
-//     console.log(response.data);
-// } catch (error) {
-//     console.error("Error joining room:", error);
-// }
-// };
+
 
 function JoinRoom() {
   
 
+useEffect(() => {
+  document.title = "Join Room";
+}, []);
+
+  const navigate = useNavigate();
+  const [playerName, setPlayerName] = useState("");
+const [roomCode, setRoomCode] = useState("");
+const joinRoom = async () => {
+  try {
+    const response = await axios.post("http://localhost:3000/join-room", {
+      roomCode,
+      playerName,
+    });
+    console.log(response.data);
+    navigate(`/lobby/${roomCode}`);
+  } catch (error) {
+    console.error("Error joining room:", error);
+  }
+};
   return (
     <>
-    <script>
-        <title>Join Room</title>
-    </script>
         <Header />
       <section id="center">
         <h1>Enter Room Code:</h1>
@@ -35,14 +39,23 @@ function JoinRoom() {
           id="room-code"
           name="room-code"
           placeholder="Enter room code"
+          value={roomCode}
+          onChange={(e) => setRoomCode(e.target.value)}
+        />
+        <textarea
+          id="player-name"
+          name="player-name"
+          placeholder="Enter player name"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
         />
         <button
           type="button"
           className="counter"
-          //onClick={joinRoom}
-          >
-            Join Room
-          </button>
+          onClick={joinRoom}
+        >
+          Join Room
+        </button>
       </section>
      
       
