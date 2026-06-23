@@ -36,6 +36,7 @@ function Home() {
         </div>
         <button
           type="button"
+          className="counter"
           onClick={() => navigate("/create")}
         >
           Create Room 
@@ -45,9 +46,11 @@ function Home() {
           
         <button
           type="button"
-          className="counter">
-            Join Room
-          </button>
+          className="counter"
+          onClick={() => navigate("/join")}
+        >
+          Join Room
+        </button>
       </section>
 
       

@@ -2,7 +2,6 @@
 import axios from 'axios'
 import '../App.css'
 import Header from '../components/Header'
-import PlayerList from '../components/PlayerList'
 import {useNavigate} from 'react-router-dom';
 
 
@@ -53,7 +52,6 @@ function CreateRoom() {
     <section id="center">
         <div className="hero">
           <h1>Waiting for players...</h1>
-            <PlayerList />
         </div>
     </section>
       

@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 
+const { Server } = require("socket.io");
+const http = require("http");
+const app = express();
 app.get("/", (req, res) => {
   res.send("Server Running");
 });
@@ -9,6 +11,18 @@ app.get("/", (req, res) => {
 
 app.use(cors());
 app.use(express.json());
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors:{
+    origin: "http://localhost:5173",
+  }
+});
+
+server.listen(3000, () => {
+  console.log("Server running");
+});
 const rooms = {};
 function generateRoomCode() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -31,9 +45,7 @@ app.post("/create-room", (req, res) => {
     console.log(`Room ${roomCode} created`);
     res.json({ roomCode: roomCode });
 });
-app.listen(3000, () => {
-  console.log("Server running");
-});
+
 app.post("/join-room", (req, res) => {
     const { roomCode, playerName } = req.body;
     const room = rooms[roomCode];
@@ -44,9 +56,22 @@ app.post("/join-room", (req, res) => {
         });
     }
     room.players.push(playerName);
-
+    io.to(roomCode).emit("player-update",room.players);
     res.json({
         success: true,
-        message: room.players 
+        players: room.players 
+        });
+    });
+
+    io.on("connection", (socket) => {
+        console.log("A user connected", socket.id);
+
+        socket.on("join-room", ({ roomCode}) => {
+            socket.join(roomCode);
+
+            console.log(`User ${socket.id} joined room ${roomCode}`);
+        });
+        socket.on("disconnect", () => {
+            console.log("A user disconnected", socket.id);
         });
     });

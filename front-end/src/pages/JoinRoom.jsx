@@ -24,6 +24,7 @@ const joinRoom = async () => {
       roomCode,
       playerName,
     });
+    console.log("Joining room with code:", roomCode);
     console.log(response.data);
     navigate(`/lobby/${roomCode}`);
   } catch (error) {
@@ -35,14 +36,14 @@ const joinRoom = async () => {
         <Header />
       <section id="center">
         <h1>Enter Room Code:</h1>
-        <textarea
+        <input
           id="room-code"
           name="room-code"
           placeholder="Enter room code"
           value={roomCode}
           onChange={(e) => setRoomCode(e.target.value)}
         />
-        <textarea
+        <input
           id="player-name"
           name="player-name"
           placeholder="Enter player name"
