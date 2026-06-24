@@ -21,6 +21,7 @@ function App() {
           <Route path="/join" element={<JoinRoom />} />
           <Route path="/questions" element={<Questions />} />
           <Route path="/lobby/:roomCode" element={<Lobby />} />
+          <Route path="/questions/:roomCode" element={<Questions />} />
         </Routes>
     </BrowserRouter>
       

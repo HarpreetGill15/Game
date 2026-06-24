@@ -9,7 +9,7 @@ function PlayerList({ players = []}) {
         <div>
             <ul>
                 {players.map((player) => (
-                    <li key={player}>{player}</li>
+                    <li key={player.socketId}>{player.name}</li>
                 ))}
             </ul>
         </div>

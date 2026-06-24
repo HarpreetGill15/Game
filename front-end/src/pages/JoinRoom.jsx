@@ -41,7 +41,7 @@ const joinRoom = async () => {
           name="room-code"
           placeholder="Enter room code"
           value={roomCode}
-          onChange={(e) => setRoomCode(e.target.value)}
+          onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
         />
         <input
           id="player-name"

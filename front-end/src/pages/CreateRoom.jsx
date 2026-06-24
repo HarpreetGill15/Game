@@ -3,16 +3,25 @@ import axios from 'axios'
 import '../App.css'
 import Header from '../components/Header'
 import {useNavigate} from 'react-router-dom';
+import { useState } from 'react';
+import socket from '../socket';
 
 
 
 function CreateRoom() {
   const navigate = useNavigate();
+  const [playerName, setPlayerName] = useState("");
 
   const createRoom = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/create-room");
+      const response = await axios.post("http://localhost:3000/create-room", {
+        playerName
+      });
       const roomCode = response.data.roomCode;
+      socket.emit("join-room", {
+    roomCode,
+    playerName
+});
 
       navigate(`/lobby/${roomCode}`);
     } catch (error) {
@@ -40,6 +49,8 @@ function CreateRoom() {
           id="host-name"
           name="host-name"
           placeholder="Enter host name"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
         />
         <button
           type="button"
