@@ -5,6 +5,7 @@ function QuestionDisplay({ question, onAnswer }) {
     }
     return (
         <div>
+            <h2>{question.questionNumber}/{question.totalQuestions}</h2>
             <h1>{question.question}</h1>
             {question.options.map((answer) => (
                 <button

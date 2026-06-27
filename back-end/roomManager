@@ -1,0 +1,54 @@
+function createRoom(rooms, roomCode, hostName) {
+
+    rooms[roomCode] = {
+        host: hostName,
+        players: [],
+        answers: {},
+        currentQuestionIndex: 0,
+        gameStarted: false,
+        createdAt: new Date()
+    };
+
+    return rooms[roomCode];
+}
+
+
+function getRoom(rooms, roomCode) {
+
+    return rooms[roomCode];
+
+}
+
+
+function addPlayer(room, playerName, socketId) {
+
+    const existingPlayer = room.players.find(
+        player => player.name === playerName
+    );
+
+
+    if(existingPlayer){
+
+        existingPlayer.socketId = socketId;
+
+    } else {
+
+        room.players.push({
+            name: playerName,
+            socketId: socketId,
+            score: 0
+        });
+
+    }
+
+
+    return room.players;
+
+}
+
+
+module.exports = {
+    createRoom,
+    getRoom,
+    addPlayer
+};

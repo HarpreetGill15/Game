@@ -1,0 +1,227 @@
+const questions = require("./questions");
+
+
+function startGame(io, rooms, roomCode){
+console.log("Game manager starting: ",roomCode);
+
+    const room = rooms[roomCode];
+
+    if(!room) return;
+if(room.gameStarted){
+        console.log("starting game ignoring");
+        return
+    }
+
+    room.gameStarted = true;
+    room.currentQuestionIndex = 0;
+
+    
+    io.to(roomCode).emit(
+        "game-started"
+    );
+
+    setTimeout(()=>{
+        startQuestion(
+        io,
+        rooms,
+        roomCode
+    );
+    },2000);
+    
+    room.gameStarted = false;
+}
+
+
+
+function startQuestion(io, rooms, roomCode){
+console.log("Start Q")
+    const room = rooms[roomCode];
+
+    if(!room) return;
+
+
+    room.answers = {};
+
+
+    const question =
+        questions[room.currentQuestionIndex];
+console.log("Question: ",question);
+
+    io.to(roomCode).emit(
+        "question-update",
+        {
+            ...question,
+            questionNumber: room.currentQuestionIndex + 1,
+            totalQuestions: questions.length
+        }
+    );
+
+
+    let timeLeft = 20;
+
+
+    const timer = setInterval(()=>{
+
+
+        io.to(roomCode).emit(
+            "timer-update",
+            timeLeft
+        );
+
+
+        timeLeft--;
+
+
+        if(timeLeft < 0){
+
+            clearInterval(timer);
+
+
+            calculateScores(
+                io,
+                rooms,
+                roomCode,
+                question
+            );
+
+        }
+
+
+    },1000);
+
+}
+
+
+
+function submitAnswer(
+    rooms,
+    roomCode,
+    socketId,
+    answer
+){
+
+    const room = rooms[roomCode];
+
+
+    if(!room){
+        return;
+    }
+
+
+    if(room.answers[socketId]){
+        return;
+    }
+
+
+    room.answers[socketId] = answer;
+
+
+    console.log(
+        "Answers:",
+        room.answers
+    );
+
+}
+
+
+
+function calculateScores(
+    io,
+    rooms,
+    roomCode,
+    question
+){
+
+    const room = rooms[roomCode];
+
+
+    room.players.forEach(player=>{
+
+
+        const answer =
+            room.answers[player.socketId];
+
+
+        if(answer === question.correctAnswer){
+
+            player.score += 100;
+
+        }
+
+
+    });
+
+
+
+    const leaderboard =
+        room.players.map(player=>({
+
+            name: player.name,
+            score: player.score
+
+        }));
+        console.log("correct: ",question.correctAnswer," answer: ",room.answers);
+
+
+    io.to(roomCode).emit(
+        "show-results",
+        leaderboard
+    );
+
+
+
+    setTimeout(()=>{
+
+
+        room.currentQuestionIndex++;
+
+
+        if(room.currentQuestionIndex >= questions.length){
+
+
+            io.to(roomCode)
+            .emit(
+                "game-over",
+                leaderboard
+            );
+
+
+            return;
+
+        }
+
+
+
+        startQuestion(
+            io,
+            rooms,
+            roomCode
+        );
+
+
+    },5000);
+
+}
+
+function sendLeaderboard(io, room){
+    
+    const leaderboard = room.players.map(player => ({
+        name: player.name,
+        score: player.score
+    }));
+
+    io.to(room.code).emit(
+        "show-results",
+        leaderboard
+    );
+
+    return leaderboard;
+}
+
+
+module.exports = {
+
+    startGame,
+    submitAnswer
+
+};

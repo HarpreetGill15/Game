@@ -22,8 +22,9 @@ function CreateRoom() {
     roomCode,
     playerName
 });
+localStorage.setItem("playerName", playerName);
 
-      navigate(`/lobby/${roomCode}`);
+navigate(`/lobby/${roomCode}`);
     } catch (error) {
       console.error("Error creating room:", error);
     }

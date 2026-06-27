@@ -3,13 +3,13 @@ const questions = [
         id: 1,
         question: "What is the capital of France?",
         options: ["Paris", "London", "Berlin", "Madrid"],
-        answer: "Paris"
+        correctAnswer: "Paris"
     },
     {
         id: 2,  
-        question: "What is the capital of Canada?:",
+        question: "What is the capital of Canada?",
         options: ["Toronto", "Ottawa", "Vancouver", "Montreal"],
-        answer: "Ottawa"
+        correctAnswer: "Ottawa"
     }
 ];
 module.exports = questions;

@@ -5,7 +5,7 @@ import '../App.css'
 import Header from '../components/Header'
 import {useNavigate} from 'react-router-dom';
 import { useEffect } from "react";
-
+import socket from '../socket';
 
 
 function JoinRoom() {
@@ -20,13 +20,19 @@ useEffect(() => {
 const [roomCode, setRoomCode] = useState("");
 const joinRoom = async () => {
   try {
+    console.log("This >",roomCode,playerName)
     const response = await axios.post("http://localhost:3000/join-room", {
       roomCode,
       playerName,
     });
-    console.log("Joining room with code:", roomCode);
-    console.log(response.data);
-    navigate(`/lobby/${roomCode}`);
+    localStorage.setItem("playerName", playerName);
+console.log("trying to join " , response )
+
+socket.emit("join-room",{
+  roomCode,
+  playerName,
+});
+navigate(`/lobby/${roomCode}`);
   } catch (error) {
     console.error("Error joining room:", error);
   }

@@ -12,12 +12,8 @@ import axios from 'axios';
 function Lobby() {
     const { roomCode } = useParams();
     const [players, setPlayers] = useState([]);
-
-    useEffect(() => {
-        socket.emit('join-room', { roomCode });
-        },
-    [roomCode]);
-
+    const [isHost, setIsHost] = useState(false);
+const playerName = localStorage.getItem("playerName");
     useEffect(() => {
         socket.on('player-update', (players) => {
             setPlayers(players);
@@ -29,6 +25,10 @@ function Lobby() {
             try {
                 const response = await axios.get(`http://localhost:3000/room/${roomCode}`);
                 setPlayers(response.data.room.players);
+
+                if (response.data.room.host === playerName){
+                    setIsHost(true);
+                }
             } catch (error) {
                 console.error('Error fetching players:', error);
             }
@@ -36,6 +36,7 @@ function Lobby() {
         fetchPlayers();
     }, [roomCode]);
     const startGame = () => {
+        console.log("START BUTTON CLICKED");
         socket.emit('start-game', { roomCode });
     }   
     const navigate = useNavigate();
@@ -46,15 +47,20 @@ function Lobby() {
         return () => {
             socket.off('game-started');
         }
-    }, []);
+    }, [roomCode]);
     return (
         <div>
             <h1>Room Code: {roomCode}</h1>
-            <button
+            {isHost ? (
+<button
                 type="button"
                 onClick={startGame}
                 className="counter"
                 > Start Game </button>
+            ) :(
+                <h2>Waiting for Host to start the game</h2>
+            )}
+            
         <section id="center">
 
             <h1>Waiting for players...</h1>
